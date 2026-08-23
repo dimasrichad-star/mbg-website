@@ -1,0 +1,10 @@
+{
+  "description": "Showcase the vibrant energy and talent of the DJ group MBG with a dynamic portfolio featuring event schedules, galleries, and easy booking options.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
