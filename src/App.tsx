@@ -324,8 +324,8 @@ function About() {
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #d4ff0008 0%, transparent 70%)" }} />
 
       {/* Lightning ornaments */}
-      <LightningBolt className="absolute top-12 right-20 animate-lightning" size={45} opacity={0.25} />
-      <LightningBolt className="absolute bottom-12 left-16 animate-pulse-glow" size={30} opacity={0.2} />
+      <LightningBolt className="absolute top-12 right-20 animate-lightning" size={45} opacity={0} />
+      <LightningBolt className="absolute bottom-12 left-16 animate-pulse-glow" size={30} opacity={0} />
 
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -333,10 +333,10 @@ function About() {
             <p className="reveal font-['Rajdhani'] tracking-[0.4em] text-sm uppercase mb-4" style={{ color: "#d4ff00", textShadow: "0 0 12px #d4ff0060" }}>
               Who We Are
             </p>
-            <h2 className="reveal reveal-delay-1 font-['Rajdhani'] font-bold text-[clamp(2.5rem,5vw,4rem)] leading-tight text-white mb-6">
-              THE FORCE<br />
-              <span style={{ color: "#d4ff00" }}>BEHIND</span> THE NIGHT
-            </h2>
+            <h2 className="reveal reveal-delay-1 font-['Rajdhani'] font-bold text-2xl md:text-4xl leading-tight text-white mb-6">
+  TEAM DJ-LEAD KARAOKE<br />
+  <span style={{ color: "#d4ff00" }}> LAKI LAKI </span> YANG ENERGIK DAN MENAWAN
+</h2>
             <p className="reveal reveal-delay-2 text-white/70 text-base leading-relaxed mb-4">
               Kami adalah DJ Lead Karaoke, dengan konsep hiburan interaktif yang siap menghidupkan suasana acara. 
 Mengusung genre BKB Inbound Koplo, kami menghadirkan pengalaman musik yang seru, energik, dan mengajak semua orang ikut bergoyang. Musik yang kami bawakan merupakan remix dari berbagai genre seperti Pop, Timur, Reggae hingga lagu-lagu hits tahun 90-an, yang kami kemas menjadi irama yang asik untuk berjoget bersama. Penampilan kami tidak hanya sekadar bernyanyi, tetapi juga membangun interaksi dengan pengunjung sehingga suasana acara menjadi lebih hidup. hangat, dan penuh energi. 
@@ -380,9 +380,9 @@ Mau tempat atau acara kamu jadi unforgettable? Yuk undang Kami.
               ))}
             </div>
 
-            <div className="reveal mt-4 relative overflow-hidden rounded-sm w-full max-w-full md:w-[600px] md:h-[400px] flex items-center justify-center">
+            <div className="reveal mt-4 relative overflow-hidden rounded-sm w-full max-w-full md:w-[650px] md:h-[400px] flex items-center justify-center">
               <img
-                src="/ber4.png"
+                src="/be4.png"
                 alt="DJ equipment"
                 className="max-w-full max-h-full object-contain"
               />
@@ -912,7 +912,7 @@ function Footer() {
               </span>
             </div>
             <p className="font-['Rajdhani'] text-white/40 text-sm tracking-widest">MARI BERGOYANG GEMBIRA</p>
-            <p className="text-white/30 text-xs mt-1 italic">"Feel The Beat. Move The Night."</p>
+            <p className="text-white/30 text-xs mt-1 italic">"POSITIVE PIBES."</p>
           </div>
 
           <div className="opacity-25 hidden md:block">
