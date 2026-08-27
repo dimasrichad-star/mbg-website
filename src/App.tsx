@@ -207,27 +207,41 @@ function Hero() {
       <Particles count={45} />
 
       {/* Big background lightning bolts */}
-      <div className="absolute left-0 top-1/4 opacity-40 pointer-events-none">
-        <svg width="180" height="300" viewBox="0 0 60 100" fill="none">
-          <polygon points="40,0 12,55 32,55 25,100 55,38 34,38" fill="#d4ff00" style={{ filter: "drop-shadow(0 0 12px #d4ff00)" }} />
-        </svg>
-      </div>
-      <div className="absolute right-0 top-1/3 opacity-35 pointer-events-none">
-        <svg width="160" height="260" viewBox="0 0 60 100" fill="none">
-          <polygon points="40,0 12,55 32,55 25,100 55,38 34,38" fill="#d4ff00" style={{ filter: "drop-shadow(0 0 12px #d4ff00)" }} />
-        </svg>
-      </div>
-      <div className="absolute left-1/4 bottom-16 opacity-25 pointer-events-none">
-        <svg width="80" height="130" viewBox="0 0 60 100" fill="none">
-          <polygon points="40,0 12,55 32,55 25,100 55,38 34,38" fill="#d4ff00" />
-        </svg>
-      </div>
-      <div className="absolute right-1/4 bottom-24 opacity-20 pointer-events-none">
-        <svg width="70" height="110" viewBox="0 0 60 100" fill="none">
-          <polygon points="40,0 12,55 32,55 25,100 55,38 34,38" fill="#d4ff00" />
-        </svg>
+   {/* Kiri atas */}
+      <div className="absolute left-60 top-1/4 opacity-100 pointer-events-none">
+        <img 
+          src="/ssqq.png" 
+          alt="decoration" 
+          className="w-[220px] h-[340px] object-contain drop-shadow-[0_0_12px_#d4ff00] animate-pulse [animation-duration:1.5s]" 
+        />
       </div>
 
+      {/* Kanan atas */}
+      <div className="absolute right-60 top-1/4 opacity-100 pointer-events-none">
+        <img 
+          src="/ssq.png" 
+          alt="decoration" 
+          className="w-[220px] h-[340px] object-contain drop-shadow-[0_0_12px_#d4ff00] animate-pulse [animation-duration:2.5s]" 
+        />
+      </div>
+
+      {/* Kiri bawah */}
+      <div className="absolute left-1/3 bottom-24 opacity-80 pointer-events-none">
+        <img 
+          src="/ssqq.png" 
+          alt="decoration" 
+          className="w-[80px] h-[130px] object-contain animate-pulse [animation-duration:1.8s]" 
+        />
+      </div>
+
+      {/* Kanan bawah */}
+      <div className="absolute right-1/3 bottom-24 opacity-80 pointer-events-none">
+        <img 
+          src="/ssq.png" 
+          alt="decoration" 
+          className="w-[70px] h-[110px] object-contain animate-pulse [animation-duration:2.2s]" 
+        />
+      </div>
       {/* Glow orbs */}
       <div className="absolute top-1/3 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #d4ff0015 0%, transparent 70%)" }} />
       <div className="absolute bottom-1/3 right-1/4 w-60 h-60 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, #ffffff08 0%, transparent 70%)" }} />
@@ -244,7 +258,7 @@ function Hero() {
           <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#d4ff00]" />
           <LightningBolt size={14} opacity={1} />
           <p className="font-['Rajdhani'] text-base md:text-xl tracking-[0.3em] text-white/90 uppercase">
-            One Beat. One Crowd. Infinite Energy..
+            POSITIVE PIBES.
           </p>
           <LightningBolt size={14} opacity={1} />
           <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#d4ff00]" />
@@ -366,15 +380,13 @@ Mau tempat atau acara kamu jadi unforgettable? Yuk undang Kami.
               ))}
             </div>
 
-            <div className="reveal mt-4 relative overflow-hidden rounded-sm" style={{ height: "660px" }}>
+            <div className="reveal mt-4 relative overflow-hidden rounded-sm w-full max-w-full md:w-[600px] md:h-[400px] flex items-center justify-center">
               <img
                 src="/ber4.png"
                 alt="DJ equipment"
-                className="w-full h-full object-cover"
-                style={{ filter: "saturate(0.6) hue-rotate(210deg) brightness(0.7)" }}
+                className="max-w-full max-h-full object-contain"
               />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #0f1480 0%, transparent 60%)", mixBlendMode: "multiply" }} />
-              <div className="absolute inset-0 border border-[#d4ff0020]" />
+              <div className="absolute inset-0 border border-[#d4ff0020] pointer-events-none" />
             </div>
           </div>
         </div>
