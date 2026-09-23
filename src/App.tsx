@@ -187,7 +187,7 @@ function Hero() {
       {/* Background image overlay */}
       <div className="absolute inset-0">
         <img
-          src="bk.jpg"
+          src="bk.webp"
           alt="DJ performance"
           className="w-full h-full object-cover opacity-100 mix-blend-luminosity"
         />
@@ -210,7 +210,7 @@ function Hero() {
    {/* Kiri atas */}
       <div className="absolute left-60 top-1/4 opacity-100 pointer-events-none">
         <img 
-          src="/ssqq.png" 
+          src="/loki.webp" 
           alt="decoration" 
           className="w-[220px] h-[340px] object-contain drop-shadow-[0_0_12px_#d4ff00] animate-pulse [animation-duration:1.5s]" 
         />
@@ -219,7 +219,7 @@ function Hero() {
       {/* Kanan atas */}
       <div className="absolute right-60 top-1/4 opacity-100 pointer-events-none">
         <img 
-          src="/ssq.png" 
+          src="/loka.webp" 
           alt="decoration" 
           className="w-[220px] h-[340px] object-contain drop-shadow-[0_0_12px_#d4ff00] animate-pulse [animation-duration:2.5s]" 
         />
@@ -228,7 +228,7 @@ function Hero() {
       {/* Kiri bawah */}
       <div className="absolute left-1/3 bottom-24 opacity-80 pointer-events-none">
         <img 
-          src="/ssqq.png" 
+          src="/loka.webp" 
           alt="decoration" 
           className="w-[80px] h-[130px] object-contain animate-pulse [animation-duration:1.8s]" 
         />
@@ -237,7 +237,7 @@ function Hero() {
       {/* Kanan bawah */}
       <div className="absolute right-1/3 bottom-24 opacity-80 pointer-events-none">
         <img 
-          src="/ssq.png" 
+          src="/loki.webp" 
           alt="decoration" 
           className="w-[70px] h-[110px] object-contain animate-pulse [animation-duration:2.2s]" 
         />
@@ -338,13 +338,10 @@ function About() {
   <span style={{ color: "#d4ff00" }}> LAKI LAKI </span> YANG ENERGIK DAN MENAWAN
 </h2>
             <p className="reveal reveal-delay-2 text-white/70 text-base leading-relaxed mb-4">
-              Kami adalah DJ Lead Karaoke, dengan konsep hiburan interaktif yang siap menghidupkan suasana acara. 
-Mengusung genre BKB Inbound Koplo, kami menghadirkan pengalaman musik yang seru, energik, dan mengajak semua orang ikut bergoyang. Musik yang kami bawakan merupakan remix dari berbagai genre seperti Pop, Timur, Reggae hingga lagu-lagu hits tahun 90-an, yang kami kemas menjadi irama yang asik untuk berjoget bersama. Penampilan kami tidak hanya sekadar bernyanyi, tetapi juga membangun interaksi dengan pengunjung sehingga suasana acara menjadi lebih hidup. hangat, dan penuh energi. 
-Dengan konsep party karaoke interaktif.
+              Siap hidupkan acaramu lewat konsep party karaoke interaktif yang seru dan penuh energi! Kami membawakan musik remix lintas genre—mulai dari Pop, Timur, Reggae, hingga hits 90-an—dalam balutan irama koplo yang asyik untuk bergoyang.Di sini, pengunjung tidak hanya duduk menonton, tetapi diajak aktif berinteraksi, bernyanyi, dan berjoget bersama. Mau acaramu jadi unforgettable? Yuk, undang kami sekarang!
 
             </p>
-            <p className="reveal reveal-delay-3 text-white/55 text-base leading-relaxed mb-8">
-              pengunjung tidak hanya duduk menikmati musik, tetapi ikut bernyanyi, berjoget, dan menjadi bagian dari keseruan acara. 
+            <p className="reveal reveal-delay-3 text-white/55 text-base leading-relaxed mb-8">  
 Mau tempat atau acara kamu jadi unforgettable? Yuk undang Kami. 
             </p>
             <div className="reveal reveal-delay-4 flex items-center gap-4">
@@ -380,9 +377,9 @@ Mau tempat atau acara kamu jadi unforgettable? Yuk undang Kami.
               ))}
             </div>
 
-            <div className="reveal mt-4 relative overflow-hidden rounded-sm w-full max-w-full md:w-[650px] md:h-[400px] flex items-center justify-center">
+            <div className="reveal mt-4 relative overflow-hidden rounded-sm w-full max-w-full md:w-[65kalo0px] md:h-[400px] flex items-center justify-center">
               <img
-                src="/be4.png"
+                src="/be4.webp"
                 alt="DJ equipment"
                 className="max-w-full max-h-full object-contain"
               />
@@ -417,33 +414,7 @@ export function Schedule() {
   }, []);
 
   const gigs = [
-    {
-      date: "AUG 23",
-      day: "Minggu",
-      name: "CFD Tegar Beriman",
-      venue: "CFD Tegar Beriman",
-      city: "Bogor",
-      time: "07:00 – 09:00",
-      tag: "COMMUNITY",
-    },
-    {
-      date: "AUG 23",
-      day: "Minggu",
-      name: "Malam Puncak Kemerdekaan",
-      venue: "Desa Cimekar",
-      city: "Bogor",
-      time: "18:00 – selesai",
-      tag: "FESTIVAL",
-    },
-    {
-      date: "AUG 26",
-      day: "Rabu",
-      name: "Malam Puncak Kemerdekaan",
-      venue: "Desa Batu Layang",
-      city: "Bogor",
-      time: "19:00 – selesai",
-      tag: "FESTIVAL",
-    },
+ 
     {
       date: "AUG 29",
       day: "Sabtu",
@@ -471,6 +442,24 @@ export function Schedule() {
       time: "09:00 – selesai",
       tag: "EVENT",
     },
+       {
+      date: "SEP 27",
+      day: "Minggu",
+      name: "TRANS TV Festival",
+      venue: "Lap. Panahan Stadion Pakansari",
+      city: "Bogor",
+      time: "06:00 – selesai",
+      tag: "FESTIVAL",
+    },
+       {
+      date: "OKT 04",
+      day: "Minggu",
+      name: "Dies Natalis PNJ",
+      venue: "Politeknik Negeri Jakarta",
+      city: "Depok",
+      time: "09:00 – selesai",
+      tag: "EVENT",
+    },
   ];
 
   return (
@@ -486,7 +475,7 @@ export function Schedule() {
       {/* ── Background Image & Gradient Overlay ── */}
       <div className="absolute inset-0 z-0">
         <img
-          src="bk.jpg"
+          src="bk.png"
           alt="DJ performance"
           className="w-full h-full object-cover opacity-100 mix-blend-luminosity"
         />
@@ -638,6 +627,7 @@ function Gallery() {
   }, []);
 
   const photos = [
+    { url: "/11.JPG", alt: "Gallery photo 11" },
     { url: "/2.jpeg", alt: "Gallery photo 2" },
     { url: "/3.jpeg", alt: "Gallery photo 3" },
     { url: "/4.jpeg", alt: "Gallery photo 4" },
@@ -647,6 +637,7 @@ function Gallery() {
     { url: "/8.jpeg", alt: "Gallery photo 8" },
     { url: "/9.jpeg", alt: "Gallery photo 9" },
     { url: "/10.jpeg", alt: "Gallery photo 10" },
+     
   ];
 
   return (
@@ -795,7 +786,7 @@ function Booking() {
       {/* Background image overlay */}
       <div className="absolute inset-0">
         <img
-          src="bk.jpg"
+          src="bk.webp"
           alt="DJ performance"
           className="w-full h-full object-cover opacity-100 mix-blend-luminosity"
         />
@@ -836,7 +827,7 @@ function Booking() {
 
         <div className="reveal reveal-delay-3">
           <a
-            href="https://wa.me/6285719303666?text=Hi%20MBG!%20I%27d%20like%20to%20book%20you%20for%20my%20event.%20Please%20send%20me%20your%20availability%20and%20rates."
+            href="https://wa.me/6285719303666?text=Halo%20MBG!%20Saya%20ingin%20memesan%20jasa%20Anda%20untuk%20acara%20saya.%20Tolong%20kirimkan%20jadwal%20ketersediaan%20dan%20daftar%20harganya"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-neon inline-flex items-center gap-4 px-10 py-5 text-white font-['Rajdhani'] font-bold text-xl tracking-[0.2em] uppercase rounded-sm hover:scale-105 transition-all duration-300"
@@ -957,7 +948,7 @@ function FloatingWhatsApp() {
         </div>
       )}
       <a
-        href="https://wa.me/6285719303666?text=Hi%20MBG!%20I%27d%20like%20to%20book%20you%20for%20my%20event.%20Please%20send%20me%20your%20availability%20and%20rates."
+        href="[https://wa.me/6285719303666?text=Halo%20MBG!%20Saya%20ingin%20memesan%20jasa%20Anda%20untuk%20acara%20saya.%20Tolong%20kirimkan%20jadwal%20ketersediaan%20dan%20daftar%20harganya]."
         target="_blank"
         rel="noopener noreferrer"
         className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
