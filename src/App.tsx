@@ -475,8 +475,8 @@ export function Schedule() {
       {/* ── Background Image & Gradient Overlay ── */}
       <div className="absolute inset-0 z-0">
         <img
-          src="bk.png"
-          alt="DJ performance"
+          src="bk.webp"
+          alt=""
           className="w-full h-full object-cover opacity-100 mix-blend-luminosity"
         />
         <div
@@ -606,11 +606,64 @@ export function Schedule() {
 }
 
 /* ─── Gallery ─── */
-/* ─── Gallery ─── */
-function Gallery() {
+export function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  
+  // State untuk melacak halaman / grup foto saat ini
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // State untuk jumlah item per halaman (1 di HP, 4 di Desktop)
+  const [itemsPerPage, setItemsPerPage] = useState(4);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setItemsPerPage(1);
+      } else {
+        setItemsPerPage(4);
+      }
+    };
+    handleResize(); // Cek saat pertama kali dimuat
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Daftar lengkap seluruh foto (dengan ajeng.jpeg di depan)
+  const photos = [
+    { url: "/ajeng.jpeg", alt: "Gallery photo Ajeng" },
+    { url: "/11.JPG", alt: "Gallery photo 11" },
+    { url: "/2.jpeg", alt: "Gallery photo 2" },
+    { url: "/3.jpeg", alt: "Gallery photo 3" },
+    { url: "/4.jpeg", alt: "Gallery photo 4" },
+    { url: "/5.jpeg", alt: "Gallery photo 5" },
+    { url: "/6.jpeg", alt: "Gallery photo 6" },
+    { url: "/7.jpeg", alt: "Gallery photo 7" },
+    { url: "/8.jpeg", alt: "Gallery photo 8" },
+    { url: "/9.jpeg", alt: "Gallery photo 9" },
+    { url: "/10.jpeg", alt: "Gallery photo 10" },
+  ];
+
+  const totalPages = Math.ceil(photos.length / itemsPerPage);
+
+  // Reset index jika melebihi total halaman saat ukuran layar berubah
+  useEffect(() => {
+    if (currentIndex >= totalPages) {
+      setCurrentIndex(0);
+    }
+  }, [totalPages]);
+
+  // Fungsi navigasi
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalPages);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages);
+  };
+
+  // Intersection Observer untuk animasi reveal
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) =>
@@ -626,19 +679,21 @@ function Gallery() {
     return () => observer.disconnect();
   }, []);
 
-  const photos = [
-    { url: "/11.JPG", alt: "Gallery photo 11" },
-    { url: "/2.jpeg", alt: "Gallery photo 2" },
-    { url: "/3.jpeg", alt: "Gallery photo 3" },
-    { url: "/4.jpeg", alt: "Gallery photo 4" },
-    { url: "/5.jpeg", alt: "Gallery photo 5" },
-    { url: "/6.jpeg", alt: "Gallery photo 6" },
-    { url: "/7.jpeg", alt: "Gallery photo 7" },
-    { url: "/8.jpeg", alt: "Gallery photo 8" },
-    { url: "/9.jpeg", alt: "Gallery photo 9" },
-    { url: "/10.jpeg", alt: "Gallery photo 10" },
-     
-  ];
+  // Auto-slide berganti foto otomatis setiap 4 detik (jika tidak dipause/hover & lightbox tertutup)
+  useEffect(() => {
+    if (isHovered || lightbox) return;
+    const interval = setInterval(() => {
+      handleNext();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, isHovered, lightbox, totalPages]);
+
+  // Mengambil foto berdasarkan index halaman aktif dan jumlah item per halaman
+  const currentPhotos = photos.slice(
+    currentIndex * itemsPerPage,
+    (currentIndex + 1) * itemsPerPage
+  );
 
   return (
     <section
@@ -656,17 +711,6 @@ function Gallery() {
           background:
             "linear-gradient(to right, transparent, #d4ff00, transparent)",
         }}
-      />
-
-      <LightningBolt
-        className="absolute top-20 left-10 animate-lightning"
-        size={50}
-        opacity={0.15}
-      />
-      <LightningBolt
-        className="absolute bottom-20 right-10 animate-pulse-glow"
-        size={35}
-        opacity={0.15}
       />
 
       <div className="max-w-6xl mx-auto relative z-10">
@@ -687,50 +731,102 @@ function Gallery() {
           </h2>
         </div>
 
-        {/* Grid teratur: 1 kolom di HP, 2 kolom di Tablet, 3 kolom di Desktop */}
-        <div className="reveal grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {photos.map((p, i) => (
-            <div
-              key={i}
-              className="gallery-item relative overflow-hidden rounded-sm cursor-pointer transition-all duration-300 group aspect-[3/4]"
-              style={{
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-              onClick={() => setLightbox(p.url)}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "#d4ff0050";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "rgba(255,255,255,0.08)";
-              }}
-            >
-              <img
-                src={p.url}
-                alt={p.alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {/* Kontainer Galeri dengan kontrol hover untuk jeda auto-slide */}
+        <div
+          className="relative group/carousel max-w-sm md:max-w-none mx-auto"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Grid responsif: 1 kolom di HP, 4 kolom di Desktop */}
+          <div className="reveal grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 min-h-[300px]">
+            {currentPhotos.map((p, i) => (
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                style={{ background: "rgba(15,20,128,0.5)" }}
+                key={`${currentIndex}-${i}`}
+                className="gallery-item relative overflow-hidden rounded-sm cursor-pointer transition-all duration-500 group aspect-[3/4]"
+                style={{
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+                onClick={() => setLightbox(p.url)}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "#d4ff0050";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "rgba(255,255,255,0.08)";
+                }}
               >
+                <img
+                  src={p.url}
+                  alt={p.alt}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
                 <div
-                  className="px-4 py-2 rounded-sm font-['Rajdhani'] tracking-widest text-xs uppercase"
-                  style={{
-                    background: "rgba(15,20,128,0.8)",
-                    border: "1px solid #d4ff0050",
-                    color: "#d4ff00",
-                  }}
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                  style={{ background: "rgba(15,20,128,0.5)" }}
                 >
-                  View
+                  <div
+                    className="px-4 py-2 rounded-sm font-['Rajdhani'] tracking-widest text-xs uppercase"
+                    style={{
+                      background: "rgba(15,20,128,0.8)",
+                      border: "1px solid #d4ff0050",
+                      color: "#d4ff00",
+                    }}
+                  >
+                    View
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Tombol Navigasi Kiri & Kanan */}
+          <button
+            onClick={handlePrev}
+            aria-label="Previous photos"
+            className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
+            style={{
+              background: "rgba(15, 20, 128, 0.7)",
+              border: "1px solid #d4ff0050",
+              color: "#d4ff00",
+            }}
+          >
+            &#10094;
+          </button>
+
+          <button
+            onClick={handleNext}
+            aria-label="Next photos"
+            className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
+            style={{
+              background: "rgba(15, 20, 128, 0.7)",
+              border: "1px solid #d4ff0050",
+              color: "#d4ff00",
+            }}
+          >
+            &#10095;
+          </button>
+        </div>
+
+        {/* Indikator Halaman / Dots */}
+        <div className="flex justify-center items-center gap-2 mt-8">
+          {Array.from({ length: totalPages }).map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: currentIndex === idx ? "24px" : "8px",
+                background: currentIndex === idx ? "#d4ff00" : "rgba(255,255,255,0.2)",
+                boxShadow: currentIndex === idx ? "0 0 10px #d4ff0080" : "none",
+              }}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
           ))}
         </div>
       </div>
 
+      {/* Modal Lightbox */}
       {lightbox && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 cursor-pointer backdrop-blur-md"
@@ -755,8 +851,6 @@ function Gallery() {
     </section>
   );
 }
-
-/* ─── Booking ─── */
 /* ─── Booking ─── */
 function Booking() {
   const ref = useRef<HTMLDivElement>(null);
