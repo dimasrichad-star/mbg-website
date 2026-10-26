@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Admin from "./Admin";
+import Admin from "./admin";
 import { supabase } from "./lib/supabase";
 
 /* ─── Color tokens ─── */
@@ -639,7 +639,7 @@ export function Gallery() {
         setLoading(false);
         return;
       }
-      
+
 const uploadedPhotos = (data ?? [])
   .map((photo: any) => {
     const path = photo.image_path;
