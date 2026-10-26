@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import Admin from "./Admin";
+import { supabase } from "./lib/supabase";
 
 /* ─── Color tokens ─── */
 // BG:     #0f1480  (deep cobalt blue)
@@ -23,7 +25,7 @@ function LightningBolt({
 }: {
   className?: string;
   color?: string;
-  size?: 140;
+  size?: number;
   opacity?: number;
   style?: React.CSSProperties;
 }) {
@@ -393,15 +395,93 @@ Mau tempat atau acara kamu jadi unforgettable? Yuk undang Kami.
 }
 
 /* ─── Gigs Schedule ─── */
+
+/* ─── Gigs Schedule ─── */
 export function Schedule() {
   const ref = useRef<HTMLDivElement>(null);
 
+  type EventItem = {
+    date: string;
+    day: string;
+    title: string;
+    location: string;
+    time: string;
+    tag: string;
+  };
+
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
+  // Ambil jadwal dari Supabase
+  useEffect(() => {
+    let active = true;
+
+    async function loadSchedules() {
+      setLoading(true);
+      setLoadError("");
+
+      const { data, error } = await supabase
+        .from("schedules")
+        .select(
+          "id, event_name, event_date, start_time, venue, city, tag"
+        )
+        .order("event_date", { ascending: true });
+
+      if (!active) return;
+
+      if (error) {
+        console.error("Gagal memuat jadwal:", error.message);
+        setLoadError("Jadwal gagal dimuat. Silakan coba lagi nanti.");
+        setEvents([]);
+        setLoading(false);
+        return;
+      }
+
+      const months = [
+        "JAN", "FEB", "MAR", "APR", "MEI", "JUN",
+        "JUL", "AGU", "SEP", "OKT", "NOV", "DES",
+      ];
+
+      const days = [
+        "MINGGU", "SENIN", "SELASA", "RABU",
+        "KAMIS", "JUMAT", "SABTU",
+      ];
+
+      
+const formattedEvents: EventItem[] = (data ?? []).map((item) => {
+  const dateString = String(item.event_date) + "T12:00:00";
+  const date = new Date(dateString);
+
+  return {
+    date: months[date.getMonth()] + " " + date.getDate(),
+    day: days[date.getDay()],
+    title: item.event_name,
+    location: item.venue + ", " + item.city,
+    time: item.start_time,
+    tag: item.tag,
+  };
+});
+
+
+      setEvents(formattedEvents);
+      setLoading(false);
+    }
+
+    void loadSchedules();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Animasi elemen saat masuk ke layar
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target
               .querySelectorAll(".reveal")
               .forEach((el) => el.classList.add("visible"));
           }
@@ -410,57 +490,9 @@ export function Schedule() {
     );
 
     if (ref.current) observer.observe(ref.current);
+
     return () => observer.disconnect();
   }, []);
-
-  const gigs = [
- 
-    {
-      date: "AUG 29",
-      day: "Sabtu",
-      name: "Malam Puncak Kemerdekaan",
-      venue: "Gunung Sindur",
-      city: "Bogor",
-      time: "18:00 – selesai",
-      tag: "FESTIVAL",
-    },
-    {
-      date: "SEP 05",
-      day: "Sabtu",
-      name: "Malam Puncak Kemerdekaan",
-      venue: "Kali Mulya",
-      city: "Depok",
-      time: "16:00 – selesai",
-      tag: "FESTIVAL",
-    },
-    {
-      date: "SEP 20",
-      day: "Minggu",
-      name: "HUT PMI",
-      venue: "PMI BOGOR",
-      city: "Bogor",
-      time: "09:00 – selesai",
-      tag: "EVENT",
-    },
-       {
-      date: "SEP 27",
-      day: "Minggu",
-      name: "TRANS TV Festival",
-      venue: "Lap. Panahan Stadion Pakansari",
-      city: "Bogor",
-      time: "06:00 – selesai",
-      tag: "FESTIVAL",
-    },
-       {
-      date: "OKT 04",
-      day: "Minggu",
-      name: "Dies Natalis PNJ",
-      venue: "Politeknik Negeri Jakarta",
-      city: "Depok",
-      time: "09:00 – selesai",
-      tag: "EVENT",
-    },
-  ];
 
   return (
     <section
@@ -469,49 +501,18 @@ export function Schedule() {
       className="relative py-28 px-6 overflow-hidden"
       style={{
         background:
-          "linear-gradient(180deg, #0a0f70 0%, #070a48 70%, #0f1480 100%)",
+          "linear-gradient(180deg, #0f1480 0%, #111890 50%, #0f1480 100%)",
       }}
     >
-      {/* ── Background Image & Gradient Overlay ── */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="bk.webp"
-          alt=""
-          className="w-full h-full object-cover opacity-100 mix-blend-luminosity"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at top, #1a22dd60 0%, #0f148090 60%, #080d60 100%)",
-          }}
-        />
-      </div>
-
-      {/* Decorative Border Accent */}
-      <div
-        className="absolute top-0 left-0 w-full h-px z-10"
-        style={{
-          background:
-            "linear-gradient(to right, transparent, #ffffff40, transparent)",
-        }}
-      />
-
-      <LightningBolt
-        className="absolute bottom-16 right-8 animate-pulse-glow z-10"
-        size={40}
-        opacity={0.15}
-      />
-
-      {/* ── Main Content Container ── */}
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <p
             className="reveal font-['Rajdhani'] tracking-[0.4em] text-sm uppercase mb-4"
             style={{ color: "#d4ff00", textShadow: "0 0 12px #d4ff0060" }}
           >
-            Upcoming event
+            UPCOMING EVENT
           </p>
+
           <h2 className="reveal reveal-delay-1 font-['Rajdhani'] font-bold text-[clamp(2.5rem,5vw,4rem)] text-white leading-tight">
             EVENT{" "}
             <span
@@ -522,84 +523,71 @@ export function Schedule() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {gigs.map((g, i) => (
-            <div
-              key={`${g.date}-${g.name}-${i}`}
-              className={`reveal reveal-delay-${(i % 4) + 1} group p-6 rounded-sm cursor-default transition-all duration-300`}
-              style={{
-                background: "rgba(255, 255, 255, 0.04)",
-                border: "1px solid rgba(212, 255, 0, 0.15)",
-                backdropFilter: "blur(12px)",
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.borderColor = "#d4ff0060";
-                el.style.boxShadow = "0 0 24px #d4ff0015";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.borderColor = "rgba(212,255,0,0.15)";
-                el.style.boxShadow = "none";
-              }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div
-                    className="font-['Rajdhani'] font-black text-3xl"
+        {loading ? (
+          <p className="text-center text-white/70">
+            Memuat jadwal...
+          </p>
+        ) : loadError ? (
+          <p role="alert" className="text-center text-white/70">
+            {loadError}
+          </p>
+        ) : events.length === 0 ? (
+          <p className="text-center text-white/70">
+            Belum ada jadwal acara.
+          </p>
+        ) : (
+          <div className="reveal grid grid-cols-1 md:grid-cols-3 gap-6">
+            {events.map((e, i) => (
+              <div
+                key={e.date + "-" + e.title + "-" + i}
+                className="relative p-6 rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 group"
+                style={{
+                  background: "rgba(15,20,128,0.5)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+                onMouseEnter={(ev) => {
+                  ev.currentTarget.style.borderColor =
+                    "rgba(212,255,0,0.5)";
+                }}
+                onMouseLeave={(ev) => {
+                  ev.currentTarget.style.borderColor =
+                    "rgba(255,255,255,0.08)";
+                }}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span
+                      className="text-xs font-['Rajdhani'] tracking-widest uppercase"
+                      style={{ color: "#d4ff00" }}
+                    >
+                      {e.date} • {e.day}
+                    </span>
+
+                    <h4 className="text-lg font-bold text-white mt-1 group-hover:text-[#d4ff00] transition-colors">
+                      {e.title}
+                    </h4>
+                  </div>
+
+                  <span
+                    className="text-[10px] px-2 py-0.5 uppercase rounded"
                     style={{
+                      background: "rgba(212,255,0,0.1)",
+                      border: "1px solid rgba(212,255,0,0.3)",
                       color: "#d4ff00",
-                      textShadow: "0 0 12px #d4ff0060",
                     }}
                   >
-                    {g.date}
-                  </div>
-                  <div className="font-['Rajdhani'] text-xs tracking-widest text-white/40 uppercase">
-                    {g.day}
-                  </div>
+                    {e.tag}
+                  </span>
                 </div>
-                <span
-                  className="font-['Rajdhani'] text-xs tracking-widest uppercase px-3 py-1 rounded-sm"
-                  style={{
-                    color: "#d4ff00",
-                    borderColor: "#d4ff0040",
-                    border: "1px solid #d4ff0030",
-                    background: "#d4ff0010",
-                  }}
-                >
-                  {g.tag || "GIG"}
-                </span>
-              </div>
 
-              <h3 className="font-['Rajdhani'] font-bold text-lg text-white tracking-wide mb-3 group-hover:text-[#d4ff00] transition-colors">
-                {g.name}
-              </h3>
-
-              <div className="space-y-1.5 text-sm text-white/50">
-                <div className="flex items-center gap-2">
-                  <span>📍</span>
-                  <span>{g.venue}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>🏙</span>
-                  <span>{g.city}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>🕙</span>
-                  <span>{g.time}</span>
+                <div className="space-y-1 text-xs text-white/70">
+                  <p>📍 {e.location}</p>
+                  <p>⏰ {e.time}</p>
                 </div>
               </div>
-
-              <div
-                className="mt-4 h-px"
-                style={{
-                  background:
-                    "linear-gradient(to right, transparent, #d4ff0050, transparent)",
-                }}
-              />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -609,87 +597,144 @@ export function Schedule() {
 export function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
-  
-  // State untuk melacak halaman / grup foto saat ini
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  
-  // State untuk jumlah item per halaman (1 di HP, 4 di Desktop)
   const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [photos, setPhotos] = useState<
+    { url: string; alt: string }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [galleryError, setGalleryError] = useState("");
 
+  // Mengatur jumlah foto sesuai ukuran layar
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerPage(1);
-      } else {
-        setItemsPerPage(4);
-      }
+      setItemsPerPage(window.innerWidth < 768 ? 1 : 4);
     };
-    handleResize(); // Cek saat pertama kali dimuat
+
+    handleResize();
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Daftar lengkap seluruh foto (dengan ajeng.jpeg di depan)
-  const photos = [
-    { url: "/ajeng.jpeg", alt: "Gallery photo Ajeng" },
-    { url: "/11.JPG", alt: "Gallery photo 11" },
-    { url: "/2.jpeg", alt: "Gallery photo 2" },
-    { url: "/3.jpeg", alt: "Gallery photo 3" },
-    { url: "/4.jpeg", alt: "Gallery photo 4" },
-    { url: "/5.jpeg", alt: "Gallery photo 5" },
-    { url: "/6.jpeg", alt: "Gallery photo 6" },
-    { url: "/7.jpeg", alt: "Gallery photo 7" },
-    { url: "/8.jpeg", alt: "Gallery photo 8" },
-    { url: "/9.jpeg", alt: "Gallery photo 9" },
-    { url: "/10.jpeg", alt: "Gallery photo 10" },
-  ];
+  // Mengambil foto dari Supabase
+  useEffect(() => {
+    let active = true;
+
+    async function loadPhotos() {
+      setLoading(true);
+      setGalleryError("");
+
+      const { data, error } = await supabase
+        .from("gallery")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!active) return;
+
+      if (error) {
+        console.error("Gagal memuat galeri:", error.message);
+        setGalleryError("Foto galeri belum dapat dimuat.");
+        setLoading(false);
+        return;
+      }
+      
+const uploadedPhotos = (data ?? [])
+  .map((photo: any) => {
+    const path = photo.image_path;
+
+    if (!path) {
+      console.warn("Foto tidak memiliki image_path:", photo);
+      return null;
+    }
+
+    const { data: imageData } = supabase.storage
+      .from("mbg-gallery")
+      .getPublicUrl(path);
+
+    return {
+      url: imageData.publicUrl,
+      alt: photo.alt_text || photo.title || "Foto galeri MBG",
+    };
+  })
+  .filter(
+    (photo: { url: string; alt: string } | null): photo is {
+      url: string;
+      alt: string;
+    } => photo !== null
+  );
+
+      if (active) {
+        setPhotos(uploadedPhotos);
+        setLoading(false);
+      }
+    }
+
+    loadPhotos();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const totalPages = Math.ceil(photos.length / itemsPerPage);
 
-  // Reset index jika melebihi total halaman saat ukuran layar berubah
+  // Pastikan halaman aktif selalu valid
   useEffect(() => {
-    if (currentIndex >= totalPages) {
+    if (totalPages === 0) {
+      setCurrentIndex(0);
+    } else if (currentIndex >= totalPages) {
       setCurrentIndex(0);
     }
-  }, [totalPages]);
+  }, [currentIndex, totalPages]);
 
-  // Fungsi navigasi
+  // Navigasi carousel
   const handleNext = () => {
+    if (totalPages <= 1) return;
     setCurrentIndex((prev) => (prev + 1) % totalPages);
   };
 
   const handlePrev = () => {
+    if (totalPages <= 1) return;
     setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages);
   };
 
-  // Intersection Observer untuk animasi reveal
+  // Animasi reveal
   useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting)
-            e.target
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target
               .querySelectorAll(".reveal")
-              .forEach((el) => el.classList.add("visible"));
-        }),
+              .forEach((item) => item.classList.add("visible"));
+          }
+        });
+      },
       { threshold: 0.1 }
     );
-    if (ref.current) observer.observe(ref.current);
+
+    observer.observe(element);
+
     return () => observer.disconnect();
   }, []);
 
-  // Auto-slide berganti foto otomatis setiap 4 detik (jika tidak dipause/hover & lightbox tertutup)
+  // Auto-slide setiap 4 detik
   useEffect(() => {
-    if (isHovered || lightbox) return;
+    if (isHovered || lightbox || totalPages <= 1) return;
+
     const interval = setInterval(() => {
-      handleNext();
+      setCurrentIndex((prev) => (prev + 1) % totalPages);
     }, 4000);
 
     return () => clearInterval(interval);
   }, [currentIndex, isHovered, lightbox, totalPages]);
 
-  // Mengambil foto berdasarkan index halaman aktif dan jumlah item per halaman
+  // Foto pada halaman aktif
   const currentPhotos = photos.slice(
     currentIndex * itemsPerPage,
     (currentIndex + 1) * itemsPerPage
@@ -717,116 +762,159 @@ export function Gallery() {
         <div className="text-center mb-16">
           <p
             className="reveal font-['Rajdhani'] tracking-[0.4em] text-sm uppercase mb-4"
-            style={{ color: "#d4ff00", textShadow: "0 0 12px #d4ff0060" }}
+            style={{
+              color: "#d4ff00",
+              textShadow: "0 0 12px #d4ff0060",
+            }}
           >
             Visual Highlights
           </p>
+
           <h2 className="reveal reveal-delay-1 font-['Rajdhani'] font-bold text-[clamp(2.5rem,5vw,4rem)] text-white leading-tight">
             THE{" "}
             <span
-              style={{ color: "#d4ff00", textShadow: "0 0 20px #d4ff0050" }}
+              style={{
+                color: "#d4ff00",
+                textShadow: "0 0 20px #d4ff0050",
+              }}
             >
               GALLERY
             </span>
           </h2>
         </div>
 
-        {/* Kontainer Galeri dengan kontrol hover untuk jeda auto-slide */}
+        {/* Carousel */}
         <div
           className="relative group/carousel max-w-sm md:max-w-none mx-auto"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          {/* Grid responsif: 1 kolom di HP, 4 kolom di Desktop */}
           <div className="reveal grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 min-h-[300px]">
-            {currentPhotos.map((p, i) => (
-              <div
-                key={`${currentIndex}-${i}`}
-                className="gallery-item relative overflow-hidden rounded-sm cursor-pointer transition-all duration-500 group aspect-[3/4]"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-                onClick={() => setLightbox(p.url)}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "#d4ff0050";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    "rgba(255,255,255,0.08)";
-                }}
-              >
-                <img
-                  src={p.url}
-                  alt={p.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+            {loading ? (
+              <div className="md:col-span-4 flex items-center justify-center min-h-[300px] text-white/70">
+                Memuat galeri MBG...
+              </div>
+            ) : galleryError ? (
+              <div className="md:col-span-4 flex flex-col items-center justify-center min-h-[300px] text-center text-white/70">
+                <p>{galleryError}</p>
+                <p className="text-sm mt-2">
+                  Silakan periksa koneksi dan akses data Supabase.
+                </p>
+              </div>
+            ) : currentPhotos.length === 0 ? (
+              <div className="md:col-span-4 flex items-center justify-center min-h-[300px] text-white/70">
+                Belum ada foto di galeri.
+              </div>
+            ) : (
+              currentPhotos.map((photo, index) => (
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                  style={{ background: "rgba(15,20,128,0.5)" }}
+                  key={`${photo.url}-${index}`}
+                  className="gallery-item relative overflow-hidden rounded-sm cursor-pointer transition-all duration-500 group aspect-[3/4]"
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                  onClick={() => setLightbox(photo.url)}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.borderColor = "#d4ff0050";
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.borderColor =
+                      "rgba(255,255,255,0.08)";
+                  }}
                 >
-                  <div
-                    className="px-4 py-2 rounded-sm font-['Rajdhani'] tracking-widest text-xs uppercase"
-                    style={{
-                      background: "rgba(15,20,128,0.8)",
-                      border: "1px solid #d4ff0050",
-                      color: "#d4ff00",
+                  <img
+                    src={photo.url}
+                    alt={photo.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(event) => {
+                      console.error(
+                        "Gambar gagal dimuat:",
+                        photo.url
+                      );
+                      event.currentTarget.style.opacity = "0.3";
                     }}
+                  />
+
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                    style={{ background: "rgba(15,20,128,0.5)" }}
                   >
-                    View
+                    <div
+                      className="px-4 py-2 rounded-sm font-['Rajdhani'] tracking-widest text-xs uppercase"
+                      style={{
+                        background: "rgba(15,20,128,0.8)",
+                        border: "1px solid #d4ff0050",
+                        color: "#d4ff00",
+                      }}
+                    >
+                      View
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
-          {/* Tombol Navigasi Kiri & Kanan */}
-          <button
-            onClick={handlePrev}
-            aria-label="Previous photos"
-            className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
-            style={{
-              background: "rgba(15, 20, 128, 0.7)",
-              border: "1px solid #d4ff0050",
-              color: "#d4ff00",
-            }}
-          >
-            &#10094;
-          </button>
+          {/* Tombol navigasi */}
+          {totalPages > 1 && (
+            <>
+              <button
+                onClick={handlePrev}
+                aria-label="Previous photos"
+                className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
+                style={{
+                  background: "rgba(15,20,128,0.7)",
+                  border: "1px solid #d4ff0050",
+                  color: "#d4ff00",
+                }}
+              >
+                &#10094;
+              </button>
 
-          <button
-            onClick={handleNext}
-            aria-label="Next photos"
-            className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
-            style={{
-              background: "rgba(15, 20, 128, 0.7)",
-              border: "1px solid #d4ff0050",
-              color: "#d4ff00",
-            }}
-          >
-            &#10095;
-          </button>
+              <button
+                onClick={handleNext}
+                aria-label="Next photos"
+                className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-md z-20 hover:scale-110"
+                style={{
+                  background: "rgba(15,20,128,0.7)",
+                  border: "1px solid #d4ff0050",
+                  color: "#d4ff00",
+                }}
+              >
+                &#10095;
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Indikator Halaman / Dots */}
-        <div className="flex justify-center items-center gap-2 mt-8">
-          {Array.from({ length: totalPages }).map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className="h-2 rounded-full transition-all duration-300"
-              style={{
-                width: currentIndex === idx ? "24px" : "8px",
-                background: currentIndex === idx ? "#d4ff00" : "rgba(255,255,255,0.2)",
-                boxShadow: currentIndex === idx ? "0 0 10px #d4ff0080" : "none",
-              }}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+        {/* Indikator halaman */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-8">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className="h-2 rounded-full transition-all duration-300"
+                style={{
+                  width: currentIndex === index ? "24px" : "8px",
+                  background:
+                    currentIndex === index
+                      ? "#d4ff00"
+                      : "rgba(255,255,255,0.2)",
+                  boxShadow:
+                    currentIndex === index
+                      ? "0 0 10px #d4ff0080"
+                      : "none",
+                }}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Modal Lightbox */}
+      {/* Lightbox */}
       {lightbox && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 cursor-pointer backdrop-blur-md"
@@ -835,16 +923,18 @@ export function Gallery() {
         >
           <button
             className="absolute top-6 right-6 text-white/60 hover:text-[#d4ff00] transition-colors font-['Rajdhani'] text-2xl"
+            aria-label="Close image"
             onClick={() => setLightbox(null)}
           >
             ✕
           </button>
+
           <img
             src={lightbox}
             alt="Fullscreen view"
             className="max-w-[90vw] max-h-[90vh] object-contain rounded-sm"
             style={{ border: "1px solid #d4ff0030" }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
           />
         </div>
       )}
@@ -1061,6 +1151,14 @@ function FloatingWhatsApp() {
 
 /* ─── Root ─── */
 export default function App() {
+  // Tampilkan halaman admin saat URL /admin dibuka
+  const path = window.location.pathname.replace(/\/+$/, "").toLowerCase();
+
+  if (path === "/admin") {
+    return <Admin />;
+  }
+
+  // Halaman utama MBG tetap seperti semula
   return (
     <div className="min-h-screen text-white" style={{ background: "#0f1480" }}>
       <Navbar />
